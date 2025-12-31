@@ -38,3 +38,10 @@ class ProverbDataset(Dataset):
 
     def __len__(self):
         return len(self.dataframe)
+
+
+class MultiChoiceProverbDataset(Dataset):
+    def __init__(self, tokenizer: PreTrainedTokenizerBase, data_file: str):
+        super().__init__()
+        self.tokenizer = tokenizer
+        self.dataframe = read_csv(data_file)

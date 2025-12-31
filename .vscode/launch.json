@@ -23,6 +23,27 @@
       ]
     },
     {
+      "name": "evaluate",
+      "type": "python",
+      "request": "launch",
+      "module": "accelerate.commands.launch",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "./src:${env:PYTHONPATH}",
+        "CUDA_VISIBLE_DEVICES": "0",
+        "WANDB_PROJECT": "debugs"
+      },
+      "justMyCode": false,
+      "args": [
+        "--num_processes=1",
+        "--mixed_precision=fp16",
+        "-m",
+        "proverb.commands.evaluate",
+        "--config-file",
+        "configs/default.yaml"
+      ]
+    },
+    {
       "name": "preprocess",
       "type": "python",
       "request": "launch",

@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
-from transformers.training_args import TrainingArguments
+from transformers.training_args_seq2seq import Seq2SeqTrainingArguments
 from transformers.hf_argparser import HfArgumentParser, DataClass
+from trl import TrlParser
 from typing import Tuple, Literal
 
 
@@ -32,7 +33,9 @@ class DataArguments:
     processing_num_workers: int = 4
 
 
-def parse_args_from_yaml(yaml_file: str) -> Tuple[DataClass, ...]:
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments))
-    model_args, training_args, data_args = parser.parse_yaml_file(yaml_file=yaml_file)
+def _parse_args() -> Tuple[DataClass, ...]:
+    parser = TrlParser(
+        dataclass_types=(ModelArguments, Seq2SeqTrainingArguments, DataArguments)
+    )
+    model_args, training_args, data_args = parser.parse_args_and_config()
     return model_args, training_args, data_args

@@ -40,15 +40,15 @@ from . import logging
 
 _is_fp16_available = is_torch_npu_available() or is_torch_cuda_available()
 try:
-    _is_bf16_available = is_torch_bf16_gpu_available() or (is_torch_npu_available() and torch.npu.is_bf16_supported())
+    _is_bf16_available = is_torch_bf16_gpu_available() or (
+        is_torch_npu_available() and torch.npu.is_bf16_supported()
+    )
 except Exception:
     _is_bf16_available = False
 
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
-
-    from ..hparams import ModelArguments
 
 
 logger = logging.get_logger(__name__)
@@ -76,7 +76,9 @@ class AverageMeter:
 def check_version(requirement: str, mandatory: bool = False) -> None:
     r"""Optionally check the package version."""
     if is_env_enabled("DISABLE_VERSION_CHECK") and not mandatory:
-        logger.warning_rank0_once("Version checking has been disabled, may lead to unexpected behaviors.")
+        logger.warning_rank0_once(
+            "Version checking has been disabled, may lead to unexpected behaviors."
+        )
         return
 
     if "gptmodel" in requirement or "autoawq" in requirement:
@@ -101,14 +103,20 @@ def check_dependencies() -> None:
     check_version("trl>=0.8.6,<=0.9.6")
 
 
-def calculate_tps(dataset: list[dict[str, Any]], metrics: dict[str, float], stage: Literal["sft", "rm"]) -> float:
+def calculate_tps(
+    dataset: list[dict[str, Any]],
+    metrics: dict[str, float],
+    stage: Literal["sft", "rm"],
+) -> float:
     r"""Calculate effective tokens per second."""
     effective_token_num = 0
     for data in dataset:
         if stage == "sft":
             effective_token_num += len(data["input_ids"])
         elif stage == "rm":
-            effective_token_num += len(data["chosen_input_ids"]) + len(data["rejected_input_ids"])
+            effective_token_num += len(data["chosen_input_ids"]) + len(
+                data["rejected_input_ids"]
+            )
 
     result = effective_token_num * metrics["epoch"] / metrics["train_runtime"]
     return result / dist.get_world_size() if dist.is_initialized() else result
@@ -125,7 +133,9 @@ def count_parameters(model: "torch.nn.Module") -> tuple[int, int]:
 
         # Due to the design of 4bit linear layers from bitsandbytes, multiply the number of parameters by itemsize
         if param.__class__.__name__ == "Params4bit":
-            if hasattr(param, "quant_storage") and hasattr(param.quant_storage, "itemsize"):
+            if hasattr(param, "quant_storage") and hasattr(
+                param.quant_storage, "itemsize"
+            ):
                 num_bytes = param.quant_storage.itemsize
             elif hasattr(param, "element_size"):  # for older pytorch version
                 num_bytes = param.element_size()
@@ -224,7 +234,10 @@ def infer_optim_dtype(model_dtype: Optional["torch.dtype"]) -> "torch.dtype":
 def is_accelerator_available() -> bool:
     r"""Check if the accelerator is available."""
     return (
-        is_torch_xpu_available() or is_torch_npu_available() or is_torch_mps_available() or is_torch_cuda_available()
+        is_torch_xpu_available()
+        or is_torch_npu_available()
+        or is_torch_mps_available()
+        or is_torch_cuda_available()
     )
 
 
@@ -237,7 +250,9 @@ def numpify(inputs: Union["NDArray", "torch.Tensor"]) -> "NDArray":
     r"""Cast a torch tensor or a numpy array to a numpy array."""
     if isinstance(inputs, torch.Tensor):
         inputs = inputs.cpu()
-        if inputs.dtype == torch.bfloat16:  # numpy does not support bfloat16 until 1.21.4
+        if (
+            inputs.dtype == torch.bfloat16
+        ):  # numpy does not support bfloat16 until 1.21.4
             inputs = inputs.to(torch.float32)
 
         inputs = inputs.numpy()
@@ -263,35 +278,44 @@ def torch_gc() -> None:
     elif is_torch_cuda_available():
         torch.cuda.empty_cache()
 
-
-def try_download_model_from_other_hub(model_args: "ModelArguments") -> str:
-    if (not use_modelscope() and not use_openmind()) or os.path.exists(model_args.model_name_or_path):
-        return model_args.model_name_or_path
-
-    if use_modelscope():
-        check_version("modelscope>=1.14.0", mandatory=True)
-        from modelscope import snapshot_download  # type: ignore
-        from modelscope.hub.api import HubApi  # type: ignore
-
-        if model_args.ms_hub_token:
-            api = HubApi()
-            api.login(model_args.ms_hub_token)
-
-        revision = "master" if model_args.model_revision == "main" else model_args.model_revision
-        with WeakFileLock(os.path.abspath(os.path.expanduser("~/.cache/llamafactory/modelscope.lock"))):
-            model_path = snapshot_download(
-                model_args.model_name_or_path,
-                revision=revision,
-                cache_dir=model_args.cache_dir,
-            )
-
-        return model_path
+    # def try_download_model_from_other_hub(model_args: "ModelArguments") -> str:
+    #     if (not use_modelscope() and not use_openmind()) or os.path.exists(
+    #         model_args.model_name_or_path
+    #     ):
+    #         return model_args.model_name_or_path
+    #
+    #     if use_modelscope():
+    #         check_version("modelscope>=1.14.0", mandatory=True)
+    #         from modelscope import snapshot_download  # type: ignore
+    #         from modelscope.hub.api import HubApi  # type: ignore
+    #
+    #         if model_args.ms_hub_token:
+    #             api = HubApi()
+    #             api.login(model_args.ms_hub_token)
+    #
+    #         revision = (
+    #             "master"
+    #             if model_args.model_revision == "main"
+    #             else model_args.model_revision
+    #         )
+    #         with WeakFileLock(
+    #             os.path.abspath(os.path.expanduser("~/.cache/llamafactory/modelscope.lock"))
+    #         ):
+    #             model_path = snapshot_download(
+    #                 model_args.model_name_or_path,
+    #                 revision=revision,
+    #                 cache_dir=model_args.cache_dir,
+    #             )
+    #
+    #         return model_path
 
     if use_openmind():
         check_version("openmind>=0.8.0", mandatory=True)
         from openmind.utils.hub import snapshot_download  # type: ignore
 
-        with WeakFileLock(os.path.abspath(os.path.expanduser("~/.cache/llamafactory/openmind.lock"))):
+        with WeakFileLock(
+            os.path.abspath(os.path.expanduser("~/.cache/llamafactory/openmind.lock"))
+        ):
             model_path = snapshot_download(
                 model_args.model_name_or_path,
                 revision=model_args.model_revision,

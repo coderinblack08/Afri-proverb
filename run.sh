@@ -1,3 +1,4 @@
 export PYTHONPATH="./src:$PYTHONPATH"
 
-python3 -m proverb.commands.train --help
+accelerate launch --num_processes=2 --mixed_precision=fp16 \
+  -m proverb.commands.evaluate --config configs/default.yaml

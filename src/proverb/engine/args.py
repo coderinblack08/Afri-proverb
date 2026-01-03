@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from transformers.training_args import TrainingArguments
 from transformers.hf_argparser import HfArgumentParser, DataClass
-from typing import Tuple
+from typing import Tuple, Literal
 
 
 @dataclass
@@ -21,6 +21,15 @@ class DataArguments:
     """
 
     dataset_dir: str = ""
+    template_name: str = "gemma"
+    location: str = "Kenya"
+    language: str = "nubian"
+    task_type: Literal[
+        "gen_swa_literal", "gen_eng_literal", "gen_swa_fig", "gen_eng_fig"
+    ] = "gen_eng_literal"
+
+    override_cache: bool = False
+    processing_num_workers: int = 4
 
 
 def parse_args_from_yaml(yaml_file: str) -> Tuple[DataClass, ...]:

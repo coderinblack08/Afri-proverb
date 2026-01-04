@@ -33,10 +33,10 @@
         "CUDA_VISIBLE_DEVICES": "0",
         "WANDB_PROJECT": "debugs"
       },
-      "justMyCode": true,
+      "justMyCode": false,
       "args": [
         "--num_processes=1",
-        "--mixed_precision=fp16",
+        "--mixed_precision=bf16",
         "-m",
         "proverb.commands.evaluate",
         "--config",

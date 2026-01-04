@@ -26,9 +26,9 @@ class ProverbDataCollator(DataCollatorForSeq2Seq):
         batch = super().__call__(features, return_tensors)
 
         # position ids
-        attention_mask = batch["attention_mask"]
-        position_ids = torch.clamp(attention_mask.cumsum(-1) - 1, min=0)
-        position_ids.masked_fill_(attention_mask == 0, 0)
-        batch["position_ids"] = position_ids
+        # attention_mask = batch["attention_mask"]
+        # position_ids = torch.clamp(attention_mask.cumsum(-1) - 1, min=0)
+        # position_ids.masked_fill_(attention_mask == 0, 0)
+        # batch["position_ids"] = position_ids
 
         return batch

@@ -1,18 +1,39 @@
 from typing import Optional
 
+# GENERATE_PROMPT_LITERAL = (
+#     "I will provide you with a proverb in {source_language}. \n"
+#     "Please give its figurative meaning in {target_language}. \n"
+#     "Respond only with the meaning, without any additional explanations. \n"
+#     "Proverb: {proverb}"
+# )
+
 GENERATE_PROMPT_LITERAL = (
-    "I will provide you with a proverb in {source_language}. \n"
-    "Please give its figurative meaning in {target_language}. \n"
-    "Respond only with the meaning, without any additional explanations. \n"
-    "Proverb: {proverb}"
+    "**Task:**\nYou are a professional translator specializing in proverbs \n"
+    "Your task is to translate the following proverb from {source_language} to {target_language} literally. \n\n"
+    "**Input**:\n"
+    "A proverb in {source_language}\n\n"
+    "**Output**:\n"
+    "The literal translation of the proverb in {target_language}.\n\n"
+    "**Input**:\n{proverb}\n\n"
+    "**Output**:\n"
+)
+GENERATE_PROMPT_FIGURATIVE = (
+    "**Task:**\nYou are a professional translator specializing in proverbs \n"
+    "Your task is to infer the figurative meaning of the following proverb from {source_language} to {target_language}. \n\n"
+    "**Input**:\n"
+    "A proverb in {source_language}\n\n"
+    "**Output**:\n"
+    "The figurative meaning of the proverb in {target_language}.\n\n"
+    "**Input**:\n{proverb}\n\n"
+    "**Output**:\n"
 )
 
-GENERATE_PROMPT_FIGURATIVE = (
-    "I will provide you with a proverb in {source_language}. \n"
-    "Please give its literal meaning in {target_language}. \n"
-    "Respond only with the meaning, without any additional explanations. \n"
-    "Proverb: {proverb}"
-)
+# GENERATE_PROMPT_FIGURATIVE = (
+#     "I will provide you with a proverb in {source_language}. \n"
+#     "Please give its literal meaning in {target_language}. \n"
+#     "Respond only with the meaning, without any additional explanations. \n"
+#     "Proverb: {proverb}"
+# )
 
 
 def get_prompt_by_task(

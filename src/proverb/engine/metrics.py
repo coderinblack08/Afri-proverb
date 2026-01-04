@@ -25,6 +25,7 @@ class TranslateMetric:
 
         self.corpus_bleu = corpus_bleu
         self.charf = load("chrf")
+        self.comet = load("comet")
 
     def __call__(
         self, eval_preds: "EvalPrediction", compute_result: bool = True

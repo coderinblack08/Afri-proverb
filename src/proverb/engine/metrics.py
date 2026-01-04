@@ -45,7 +45,14 @@ class TranslateMetric:
             predictions=decoded_preds, references=decoded_labels
         )
 
+        comet_score = self.comet.compute(
+            predictions=decoded_preds,
+            references=decoded_labels,
+            model_name="wmt-large-da-est",
+        )
+
         return {
             "bleu": round(bleu_score.score, 6),
             "chrf": round(charf_score["score"], 6),
+            "comet": round(comet_score["mean_score"], 6),
         }

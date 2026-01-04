@@ -57,7 +57,9 @@ class TaskArguments:
     ] = "gen_eng_literal"
 
 
-def _parse_args() -> Tuple[DataClass, ...]:
+def _parse_args() -> Tuple[
+    ModelArguments, Seq2SeqTrainingArguments, DataArguments, TaskArguments
+]:
     parser = TrlParser(
         dataclass_types=(
             ModelArguments,

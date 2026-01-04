@@ -10,7 +10,7 @@ from proverb.data.collators import ProverbDataCollator
 from proverb.engine.trainer import CustomTrainer
 from proverb.engine.metrics import TranslateMetric
 
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, TrainingArguments
 from transformers.models.gemma3 import Gemma3ForCausalLM, Gemma3ForConditionalGeneration
 from pprint import pprint
 
@@ -54,6 +54,13 @@ def main():
 
     if training_args.local_process_index == 0:
         pprint(results)
+        import json
+        import os
+
+        with open(
+            os.path.join(training_args.output_dir, "evaluation_results.json"), "w"
+        ) as f:
+            json.dump(results, f, indent=4)
 
 
 if __name__ == "__main__":

@@ -66,7 +66,7 @@ def get_template(
             add_generation_prompt=True,
             extra_eos_token=True,
         )
-    elif name == "qwen":
+    elif name == "qwen3":
         return Template(
             task_type=task_type,
             tokenizer=tokenizer,

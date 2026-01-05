@@ -45,7 +45,7 @@
         "1e-4",
         "--location=Kenya",
         "--language=maasai",
-        "--task_type=gen_eng_fig",
+        "--task_type=gen_swa_fig",
         "--model_name_or_path=Qwen/Qwen3-8B",
         "--template_name=qwen"
       ]

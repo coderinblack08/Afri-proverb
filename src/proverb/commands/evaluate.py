@@ -9,9 +9,9 @@ from proverb.data.loader import load_proverb_dataset
 from proverb.data.collators import ProverbDataCollator
 from proverb.engine.trainer import CustomTrainer
 from proverb.engine.metrics import TranslateMetric
+from proverb.model.loader import load_model
 
-from transformers import AutoTokenizer, TrainingArguments
-from transformers.models.gemma3 import Gemma3ForCausalLM, Gemma3ForConditionalGeneration
+from transformers import AutoTokenizer
 from pprint import pprint
 
 
@@ -22,10 +22,9 @@ def main():
         use_fast=True,
     )
 
-    model = Gemma3ForConditionalGeneration.from_pretrained(
-        model_args.model_name_or_path,
-        # attn_implementation="sdpa",
-    )
+    tokenizer.padding_side = "left"
+
+    model = load_model(model_args)
 
     loaded_datasets = load_proverb_dataset(
         tokenizer, data_args, training_args, task_args

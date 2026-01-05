@@ -8,6 +8,7 @@ from typing import List, Dict, Tuple
 import os
 from ..engine.args import DataArguments, TaskArguments
 from .processor import Processor
+from ..extras.misc import print_dataset_sample
 
 
 def load_proverb_dataset(
@@ -38,6 +39,10 @@ def load_proverb_dataset(
                 dataset = dataset.map(
                     processor, remove_columns=dataset.column_names, **process_args
                 )
+
+            if training_args.local_process_index == 0:
+                print(f"Sample from location: {loc}, language: {lang}\n")
+                print_dataset_sample(tokenizer, dataset, num_samples=2)
 
             ret.append({"location": loc, "language": lang, "dataset": dataset})
 

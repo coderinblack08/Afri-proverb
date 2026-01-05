@@ -352,3 +352,19 @@ def fix_proxy(ipv6_enabled: bool = False) -> None:
     if ipv6_enabled:
         os.environ.pop("http_proxy", None)
         os.environ.pop("HTTP_PROXY", None)
+
+
+def print_dataset_sample(tokenizer, dataset, num_samples: int = 1) -> None:
+    r"""Print sample data from the dataset."""
+
+    for i in range(num_samples):
+        item = dataset[i]
+        print(f"\n======Sample{i}==========\n")
+        print("INPUT:\n\n")
+        print(tokenizer.decode(item["input_ids"]))
+        print("\nLABEL:\n\n")
+        print(tokenizer.decode(item["label"]))
+        print("\nINPUT IDS:\n\n")
+        print(item["input_ids"])
+        print("\nLABEL IDS:\n\n")
+        print(item["label"])

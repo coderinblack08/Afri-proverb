@@ -33,7 +33,10 @@ class Template:
     def format_prompt(self, prompt: str) -> str:
         message = self.construct_message(prompt)
         prompt = self.tokenizer.apply_chat_template(
-            message, add_generation_prompt=self.add_generation_prompt, tokenize=False
+            message,
+            add_generation_prompt=self.add_generation_prompt,
+            tokenize=False,
+            enable_thinking=False,
         )
         if self.extra_bos_token:
             prompt = self.bos_token + prompt
@@ -62,6 +65,13 @@ def get_template(
             tokenizer=tokenizer,
             add_generation_prompt=True,
             extra_eos_token=True,
+        )
+    elif name == "qwen":
+        return Template(
+            task_type=task_type,
+            tokenizer=tokenizer,
+            add_generation_prompt=True,
+            extra_eos_token=False,
         )
     else:
         raise ValueError(f"Unknown template name: {name}")

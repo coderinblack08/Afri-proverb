@@ -52,6 +52,7 @@ class TaskArguments:
     Arguments specific to the proverb generation task.
     """
 
+    task_class: Literal["train", "eval"] = "eval"
     task_type: Literal[
         "gen_swa_literal", "gen_eng_literal", "gen_swa_fig", "gen_eng_fig"
     ] = "gen_eng_literal"

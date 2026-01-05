@@ -42,7 +42,9 @@
         "--config",
         "configs/default.yaml",
         "--learning_rate",
-        "1e-4"
+        "1e-4",
+        "--location=Kenya",
+        "--language=maasai"
       ]
     },
     {

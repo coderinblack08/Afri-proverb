@@ -44,12 +44,20 @@ class Processor:
         prompt, label = chat_template(prompt, label).values()
 
         if "gen" in self.task_args.task_type:
-            return dict(
+            ret = dict(
                 input_ids=self.tokenizer.encode(prompt, add_special_tokens=False),
                 label=self.tokenizer.encode(label, add_special_tokens=False),
             )
         else:
             raise ValueError(f"Unknown task type: {self.task_args.task_type}")
+
+        if (
+            self.task_args.task_class == "eval"
+            and "literal" in self.task_args.task_type
+        ):
+            ret["source"] = self.tokenizer.encode(source, add_special_tokens=False)
+
+        return ret
 
     def _get_source_column_name(self):
         return f"{self.source_language}_prov"

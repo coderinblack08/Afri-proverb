@@ -3,8 +3,8 @@ model_name_or_path: google/gemma-3-4b-it
 
 dataset_dir: dataset/African-Proverbs/Data
 template_name: gemma
-location: "Kenya, Ethiopia"
-language: "nubian, maasai, gikuyu, ekegusii; borana"
+location: "Kenya, Ethiopia, Somali, Tanzania, Uganda, DRC"
+language: "nubian, maasai, gikuyu, ekegusii; borana; somali; gweno, kihangaza, kihara, nyaturu, pare, zigula; alur, chiga; bangubangu"
 
 task_type: "gen_eng_literal"
 

@@ -35,6 +35,8 @@ class CustomTrainer(Seq2SeqTrainer):
         else:
             labels = inputs.get("labels")
 
+        sources = inputs.pop("source", None)
+
         loss, generated_tokens, _ = super().prediction_step(
             model,
             inputs,
@@ -47,6 +49,9 @@ class CustomTrainer(Seq2SeqTrainer):
                 self.processing_class.pad_token_id
             )
             generated_tokens = generated_tokens.contiguous()
+
+        if sources is not None:
+            return loss, generated_tokens, (labels, sources)
 
         return loss, generated_tokens, labels
 

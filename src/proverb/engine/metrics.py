@@ -30,13 +30,34 @@ class TranslateMetric:
     def __call__(
         self, eval_preds: "EvalPrediction", compute_result: bool = True
     ) -> Optional[dict[str, float]]:
-        preds, labels = numpify(eval_preds.predictions), numpify(eval_preds.label_ids)
+        if isinstance(eval_preds.label_ids, tuple):
+            preds, labels, sources = (
+                numpify(eval_preds.predictions),
+                numpify(eval_preds.label_ids[0]),
+                numpify(eval_preds.label_ids[1]),
+            )
+        else:
+            preds, labels = (
+                numpify(eval_preds.predictions),
+                numpify(eval_preds.label_ids),
+            )
+            sources = None
 
         preds = np.where(preds != IGNORE_INDEX, preds, self.tokenizer.pad_token_id)
         labels = np.where(labels != IGNORE_INDEX, labels, self.tokenizer.pad_token_id)
+        if sources is not None:
+            sources = np.where(
+                sources != IGNORE_INDEX, sources, self.tokenizer.pad_token_id
+            )
 
         decoded_preds = self.tokenizer.batch_decode(preds, skip_special_tokens=True)
         decoded_labels = self.tokenizer.batch_decode(labels, skip_special_tokens=True)
+
+        decoded_sources = None
+        if sources is not None:
+            decoded_sources = self.tokenizer.batch_decode(
+                sources, skip_special_tokens=True
+            )
 
         bleu_score = self.corpus_bleu(
             decoded_preds, [[label] for label in decoded_labels]
@@ -44,15 +65,18 @@ class TranslateMetric:
         charf_score = self.charf.compute(
             predictions=decoded_preds, references=decoded_labels
         )
-
-        comet_score = self.comet.compute(
-            predictions=decoded_preds,
-            references=decoded_labels,
-            model_name="wmt-large-da-est",
-        )
-
-        return {
+        ret = {
             "bleu": round(bleu_score.score, 6),
             "chrf": round(charf_score["score"], 6),
-            "comet": round(comet_score["mean_score"], 6),
         }
+
+        if decoded_sources is not None:
+            comet_score = self.comet.compute(
+                predictions=decoded_preds,
+                references=decoded_labels,
+                sources=decoded_sources,
+            )
+
+            ret["comet"] = round(comet_score["mean_score"], 6)
+
+        return ret

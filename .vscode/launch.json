@@ -47,7 +47,8 @@
         "--language=kihangaza",
         "--task_type=gen_swa_fig",
         "--model_name_or_path=Qwen/Qwen3-8B",
-        "--template_name=qwen3"
+        "--template_name=qwen3",
+        "--few_shot_num=3"
       ]
     },
     {

@@ -33,7 +33,7 @@ def load_proverb_dataset(
             dataset = Dataset.from_pandas(csv_file)
 
             # dataset = load_dataset("csv", data_files=file_path)["train"]
-            processor = Processor(tokenizer, lang, data_args, task_args)
+            processor = Processor(tokenizer, lang, data_args, task_args, dataset)
 
             with training_args.main_process_first(desc="dataset map pre-processing"):
                 process_args = {

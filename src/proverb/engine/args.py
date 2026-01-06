@@ -29,6 +29,8 @@ class DataArguments:
     override_cache: bool = False
     processing_num_workers: int = 4
 
+    few_shot_num: int = 0
+
     def __post_init__(self):
         parsed_location = [loc.strip() for loc in self.location.split(",")]
         parsed_language = [lang.strip() for lang in self.language.split(";")]

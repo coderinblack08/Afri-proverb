@@ -17,6 +17,7 @@ data_args = DataArguments(
     language="nubian, maasai, gikuyu, ekegusii; borana",
     override_cache=False,
     processing_num_workers=1,
+    few_shot_num=2,
 )
 
 task_args = TaskArguments(

@@ -71,3 +71,5 @@ class Processor:
             return "swa_figurative"
         elif self.task_args.task_type == "gen_eng_fig":
             return "eng_figurative"
+        else:
+            raise ValueError(f"Unknown task type: {self.task_args.task_type}")

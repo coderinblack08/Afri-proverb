@@ -43,11 +43,11 @@
         "configs/default.yaml",
         "--learning_rate",
         "1e-4",
-        "--location=Kenya",
-        "--language=maasai",
+        "--location=Tanzania",
+        "--language=kihangaza",
         "--task_type=gen_swa_fig",
         "--model_name_or_path=Qwen/Qwen3-8B",
-        "--template_name=qwen"
+        "--template_name=qwen3"
       ]
     },
     {

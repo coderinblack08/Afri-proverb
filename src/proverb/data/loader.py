@@ -4,6 +4,7 @@ from transformers.tokenization_utils_base import (
 from datasets import load_dataset, Dataset
 from transformers.training_args_seq2seq import Seq2SeqTrainingArguments
 from typing import List, Dict, Tuple
+from pandas import read_csv
 
 import os
 from ..engine.args import DataArguments, TaskArguments
@@ -26,7 +27,12 @@ def load_proverb_dataset(
                 loc,
                 f"{lang}_prov.csv",
             )
-            dataset = load_dataset("csv", data_files=file_path)["train"]
+            csv_file = read_csv(file_path)
+            csv_file.columns = csv_file.columns.str.strip()
+
+            dataset = Dataset.from_pandas(csv_file)
+
+            # dataset = load_dataset("csv", data_files=file_path)["train"]
             processor = Processor(tokenizer, lang, data_args, task_args)
 
             with training_args.main_process_first(desc="dataset map pre-processing"):

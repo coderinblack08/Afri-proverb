@@ -28,6 +28,11 @@ def load_model(model_args: ModelArguments) -> torch.nn.Module:
             model_args.model_name_or_path,
             trust_remote_code=True,
         )
+    elif "Mistral" in model_args.model_name_or_path:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_args.model_name_or_path,
+            trust_remote_code=True,
+        )
     else:
         raise ValueError(f"Unknown model type: {model_args.model_name_or_path}")
 

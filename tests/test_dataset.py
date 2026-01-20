@@ -12,7 +12,7 @@ import torch
 
 data_args = DataArguments(
     dataset_dir="dataset/African-Proverbs/Data",
-    template_name="gemma",
+    template_name="mistral",
     location="Kenya, Ethiopia",
     language="nubian, maasai, gikuyu, ekegusii; borana",
     override_cache=False,
@@ -29,7 +29,9 @@ training_args = Seq2SeqTrainingArguments()
 
 
 def test_dataset_loading():
-    tokenizer = AutoTokenizer.from_pretrained("google/gemma-3-1b-it")
+    # tokenizer = AutoTokenizer.from_pretrained("google/gemma-3-1b-it")
+    # tokenizer = AutoTokenizer.from_pretrained("google/gemma-3-1b-it")
+    tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
     loaded_datasets = load_proverb_dataset(
         tokenizer, data_args, training_args, task_args
     )

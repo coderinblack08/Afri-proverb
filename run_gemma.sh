@@ -25,7 +25,7 @@ accelerate launch --num_processes=2 --mixed_precision=bf16 \
   --output_dir outputs/gemma3-12b-it-gen-swa-fig \
   --model_name_or_path google/gemma-3-12b-it
 
-# --------------------------------------------
+# -------------------------GEMMA 4B-----------------------------------
 
 accelerate launch --num_processes=2 --mixed_precision=bf16 \
   -m proverb.commands.evaluate --config configs/default.yaml \
@@ -51,7 +51,7 @@ accelerate launch --num_processes=2 --mixed_precision=bf16 \
   --output_dir outputs/gemma3-4b-it-gen-swa-fig \
   --model_name_or_path google/gemma-3-4b-it
 
-# --------------------------------------------
+# ---------------------------GEMMA 1B---------------------------------
 
 accelerate launch --num_processes=2 --mixed_precision=bf16 \
   -m proverb.commands.evaluate --config configs/default.yaml \

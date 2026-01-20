@@ -73,5 +73,12 @@ def get_template(
             add_generation_prompt=True,
             extra_eos_token=False,
         )
+    elif name == "mistral":
+        return Template(
+            task_type=task_type,
+            tokenizer=tokenizer,
+            add_generation_prompt=True,
+            extra_eos_token=False,
+        )
     else:
         raise ValueError(f"Unknown template name: {name}")

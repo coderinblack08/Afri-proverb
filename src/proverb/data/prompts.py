@@ -50,7 +50,7 @@ FEW_SHOTS_GENERATE_PROMPT_LITERAL = (
 
 
 FEW_SHOTS_GENERATE_PROMPT_FIGURATIVE = (
-    "**Task:**\nYou are a professional translator specializing in proverbs \n"
+    "**Task:**\nYou are a professional translator specializing in proverbs \n"  # TODO: add native speaker
     "Your task is to infer the figurative meaning of the following proverb from {source_language} to {target_language}. \n\n"
     "**Input**:\n"
     "A proverb in {source_language}\n\n"

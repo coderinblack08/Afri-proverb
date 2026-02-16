@@ -30,12 +30,12 @@
       "console": "integratedTerminal",
       "env": {
         "PYTHONPATH": "./src:${env:PYTHONPATH}",
-        "CUDA_VISIBLE_DEVICES": "0",
+        "CUDA_VISIBLE_DEVICES": "0,1",
         "WANDB_PROJECT": "debugs"
       },
-      "justMyCode": false,
+      "justMyCode": true,
       "args": [
-        "--num_processes=1",
+        "--num_processes=2",
         "--mixed_precision=bf16",
         "-m",
         "proverb.commands.evaluate",
@@ -43,12 +43,12 @@
         "configs/default.yaml",
         "--learning_rate",
         "1e-4",
-        "--location=Tanzania",
-        "--language=kihangaza",
-        "--task_type=gen_swa_fig",
-        "--model_name_or_path=Qwen/Qwen3-8B",
-        "--template_name=qwen3",
-        "--few_shot_num=3"
+        "--location=Kenya",
+        "--language=digo, ekegusii",
+        "--task_type=gen_swa_literal",
+        "--model_name_or_path=google/gemma-3-4b-it",
+        "--template_name=gemma",
+        "--few_shot_num=0"
       ]
     },
     {

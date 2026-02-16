@@ -58,6 +58,7 @@ class TaskArguments:
     task_type: Literal[
         "gen_swa_literal", "gen_eng_literal", "gen_swa_fig", "gen_eng_fig"
     ] = "gen_eng_literal"
+    my_debug: bool = False
 
 
 def _parse_args() -> Tuple[

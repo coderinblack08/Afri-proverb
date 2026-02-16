@@ -60,6 +60,7 @@ class CustomTrainer(Seq2SeqTrainer):
         dataset: "Dataset",
         predict_results: "PredictionOutput",
         skip_special_tokens: bool = True,
+        file_name: str = "generated_predictions.jsonl",
     ) -> None:
         r"""Save model predictions to `output_dir`.
 
@@ -68,14 +69,18 @@ class CustomTrainer(Seq2SeqTrainer):
         if not self.is_world_process_zero():
             return
 
-        output_prediction_file = os.path.join(
-            self.args.output_dir, "generated_predictions.jsonl"
-        )
+        output_prediction_file = os.path.join(self.args.output_dir, file_name)
         logger.info_rank0(f"Saving prediction results to {output_prediction_file}")
 
+        if isinstance(predict_results.label_ids, tuple):
+            label_ids, source_ids = predict_results.label_ids
+        else:
+            label_ids = predict_results.label_ids
+            source_ids = None
+
         labels = np.where(
-            predict_results.label_ids != IGNORE_INDEX,
-            predict_results.label_ids,
+            label_ids != IGNORE_INDEX,
+            label_ids,
             self.processing_class.pad_token_id,
         )
         preds = np.where(

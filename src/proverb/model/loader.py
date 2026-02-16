@@ -3,7 +3,11 @@ from ..engine.args import ModelArguments
 
 
 from transformers.models.gemma3 import Gemma3ForCausalLM, Gemma3ForConditionalGeneration
-from transformers import AutoModelForCausalLM
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    Mistral3ForConditionalGeneration,
+)
 
 
 def load_model(model_args: ModelArguments) -> torch.nn.Module:
@@ -28,8 +32,8 @@ def load_model(model_args: ModelArguments) -> torch.nn.Module:
             model_args.model_name_or_path,
             trust_remote_code=True,
         )
-    elif "Mistral" in model_args.model_name_or_path:
-        model = AutoModelForCausalLM.from_pretrained(
+    elif "Ministral" in model_args.model_name_or_path:
+        model = Mistral3ForConditionalGeneration.from_pretrained(
             model_args.model_name_or_path,
             trust_remote_code=True,
         )
@@ -37,3 +41,17 @@ def load_model(model_args: ModelArguments) -> torch.nn.Module:
         raise ValueError(f"Unknown model type: {model_args.model_name_or_path}")
 
     return model
+
+
+def load_tokenizer(model_args: ModelArguments):
+    if "Ministral-3" in model_args.model_name_or_path:
+        from transformers.tokenization_mistral_common import MistralCommonTokenizer
+
+        tokenizer = MistralCommonTokenizer.from_pretrained(
+            model_args.model_name_or_path,
+        )
+        return tokenizer
+    else:
+        return AutoTokenizer.from_pretrained(
+            model_args.model_name_or_path, use_fast=True
+        )

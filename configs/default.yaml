@@ -1,13 +1,23 @@
 # model_name_or_path: google/gemma-3-4b-it
 model_name_or_path: google/gemma-3-12b-it
 
+debug: false
+
 dataset_dir: dataset/African-Proverbs/Data
 template_name: gemma
-# location: "Kenya, Somali"
-# language: "kamba, maasai, nubian, nubian_2, luo, gikuyu, ekegusii, digo; somali"
-location: "Kenya, Ethiopia, Somali, Tanzania, Uganda, DRC"
-language: "kamba, maasai, nubian, nubian_2, luo, gikuyu, ekegusii, digo; borana; somali; gweno, kihangaza, kihara, nyaturu, pare, zigula; alur, chiga; bangubangu, hemba"
+# location: "Kenya"
+# language: "digo, ekegusii, gikuyu, kamba, luo, maasai, meru, nandi, nubian_2, nubian, nyala, olusamia, orma, rendille, samburu, teso, tugen, turkana"
+# location: "Tanzania"
+# language: "gweno, kihangaza, kihara, makonde, nyaturu, pare, sukuma, zigula"
 few_shot_num: 0
+# location: "DRC"
+# language: "kwele, tetela, bangubangu, hema, hemba, holoholo, nande, taabwa, tshiluba"
+location: "Uganda"
+language: "alur, chiga, ganda, rufumbira, runyoro, soga, tooro"
+# location: "Somali"
+# language: "somali"
+# location: "Ethiopia"
+# language: "borana, burji"
 
 task_class: eval
 task_type: "gen_eng_literal"

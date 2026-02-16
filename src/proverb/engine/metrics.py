@@ -63,11 +63,19 @@ class TranslateMetric:
             decoded_preds, [[label] for label in decoded_labels]
         )
         charf_score = self.charf.compute(
-            predictions=decoded_preds, references=decoded_labels
+            predictions=decoded_preds,
+            references=decoded_labels,
+        )
+        chrf_pp_score = self.charf.compute(
+            predictions=decoded_preds,
+            references=decoded_labels,
+            char_order=6,
+            word_order=2,
         )
         ret = {
             "bleu": round(bleu_score.score, 6),
             "chrf": round(charf_score["score"], 6),
+            "chrf++": round(chrf_pp_score["score"], 6),
         }
 
         if decoded_sources is not None:

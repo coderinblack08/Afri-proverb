@@ -35,20 +35,17 @@
       },
       "justMyCode": true,
       "args": [
-        "--num_processes=2",
+        "--num_processes=1",
         "--mixed_precision=bf16",
         "-m",
         "proverb.commands.evaluate",
         "--config",
         "configs/default.yaml",
-        "--learning_rate",
-        "1e-4",
-        "--location=Kenya",
-        "--language=digo, ekegusii",
         "--task_type=gen_swa_literal",
         "--model_name_or_path=google/gemma-3-4b-it",
         "--template_name=gemma",
-        "--few_shot_num=0"
+        "--few_shot_num=0",
+        "--output_dir=outputs/debug_outputs"
       ]
     },
     {

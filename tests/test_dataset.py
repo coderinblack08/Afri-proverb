@@ -13,15 +13,15 @@ import torch
 data_args = DataArguments(
     dataset_dir="dataset/African-Proverbs/Data",
     template_name="mistral",
-    location="Kenya, Ethiopia",
-    language="nubian, maasai, gikuyu, ekegusii; borana",
+    location="DRC",
+    language="bangubangu",
     override_cache=False,
     processing_num_workers=1,
-    few_shot_num=2,
+    few_shot_num=0,
 )
 
 task_args = TaskArguments(
-    task_type="gen_eng_literal",
+    task_type="gen_swa_literal",
 )
 
 

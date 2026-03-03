@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from transformers.training_args_seq2seq import Seq2SeqTrainingArguments
 from transformers.hf_argparser import HfArgumentParser, DataClass
 from trl import TrlParser
-from typing import Tuple, Literal, List
+from typing import Tuple, Literal, List, Optional
 
 
 @dataclass
@@ -13,6 +13,13 @@ class ModelArguments:
     """
 
     model_name_or_path: str = "google/gemma-3-4b-it"
+    inference_backend: Literal["local", "together"] = "local"
+    together_api_key: Optional[str] = None
+    together_max_tokens: int = 256
+    together_max_tokens_ceiling: int = 4096
+    together_temperature: float = 0.0
+    together_top_p: float = 1.0
+    together_max_retries: int = 3
 
 
 @dataclass
@@ -59,6 +66,7 @@ class TaskArguments:
         "gen_swa_literal", "gen_eng_literal", "gen_swa_fig", "gen_eng_fig"
     ] = "gen_eng_literal"
     my_debug: bool = False
+    max_eval_samples: int = 0
 
 
 def _parse_args() -> Tuple[

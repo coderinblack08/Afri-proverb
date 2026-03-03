@@ -1,7 +1,7 @@
 *.csv
 outputs/
 wandb/
-dataset
+dataset/
 *.mp4
 download-ripgrepBnnefY/
 

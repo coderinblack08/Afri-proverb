@@ -1,13 +1,20 @@
 from dataclasses import dataclass
+import re
+import subprocess
+import tempfile
+import time
 from transformers.trainer_utils import EvalPrediction
 from typing import Dict, List
 from typing import TYPE_CHECKING, Optional
 import numpy as np
 from ..data.constants import IGNORE_INDEX
+from ..extras.logging import get_logger
 from ..extras.misc import numpify
 
 if TYPE_CHECKING:
     from transformers import PreTrainedTokenizer
+
+logger = get_logger("proverb.engine.metrics")
 
 
 @dataclass
@@ -101,11 +108,78 @@ class TextTranslateMetric:
         self.corpus_bleu = corpus_bleu
         self.charf = load("chrf")
         self.comet = None
+        self.comet_mode = "disabled"
         if self.include_comet:
             try:
                 self.comet = load("comet")
-            except Exception:
-                self.comet = None
+                self.comet_mode = "native"
+            except Exception as exc:
+                # Keep COMET available through an isolated sidecar environment to avoid
+                # pin conflicts with the main runtime (torch/transformers versions).
+                self.comet_mode = "sidecar"
+                logger.warning_rank0(
+                    "Falling back to sidecar COMET scoring because evaluate/comet could not be loaded: %s",
+                    exc,
+                )
+
+    @staticmethod
+    def _compute_comet_sidecar(
+        predictions: List[str], references: List[str], sources: List[str]
+    ) -> float:
+        with tempfile.TemporaryDirectory(prefix="comet-score-") as tmp_dir:
+            src_path = f"{tmp_dir}/sources.txt"
+            mt_path = f"{tmp_dir}/predictions.txt"
+            ref_path = f"{tmp_dir}/references.txt"
+
+            with open(src_path, "w", encoding="utf-8") as f:
+                f.write("\n".join(s.replace("\n", " ").strip() for s in sources))
+            with open(mt_path, "w", encoding="utf-8") as f:
+                f.write("\n".join(s.replace("\n", " ").strip() for s in predictions))
+            with open(ref_path, "w", encoding="utf-8") as f:
+                f.write("\n".join(s.replace("\n", " ").strip() for s in references))
+
+            cmd = [
+                "uvx",
+                "--from",
+                "unbabel-comet==2.2.7",
+                "--with",
+                "setuptools<81",
+                "comet-score",
+                "-s",
+                src_path,
+                "-t",
+                mt_path,
+                "-r",
+                ref_path,
+                "--quiet",
+                "--only_system",
+            ]
+            logger.info_rank0(
+                "Starting COMET sidecar scoring for %d segments (first run may download models).",
+                len(predictions),
+            )
+            start_time = time.time()
+            proc = subprocess.run(
+                cmd,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            output = (proc.stdout or "").strip()
+            # comet-score --only_system prints a single score value.
+            match = re.findall(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?", output)
+            if not match:
+                raise RuntimeError(
+                    f"Could not parse COMET score from sidecar output: {output!r}"
+                )
+            score = float(match[-1])
+            elapsed = time.time() - start_time
+            logger.info_rank0(
+                "COMET sidecar scoring finished in %.2fs with score %.6f",
+                elapsed,
+                score,
+            )
+            return score
 
     def __call__(
         self,
@@ -130,14 +204,17 @@ class TextTranslateMetric:
             "chrf++": round(chrf_pp_score["score"], 6),
         }
 
-        if self.comet is not None and sources is not None and len(sources) == len(
-            predictions
-        ):
-            comet_score = self.comet.compute(
-                predictions=predictions,
-                references=references,
-                sources=sources,
-            )
-            ret["comet"] = round(comet_score["mean_score"], 6)
+        if sources is not None and len(sources) == len(predictions):
+            if self.comet_mode == "native" and self.comet is not None:
+                comet_score = self.comet.compute(
+                    predictions=predictions,
+                    references=references,
+                    sources=sources,
+                )
+                ret["comet"] = round(comet_score["mean_score"], 6)
+            elif self.comet_mode == "sidecar":
+                ret["comet"] = round(
+                    self._compute_comet_sidecar(predictions, references, sources), 6
+                )
 
         return ret

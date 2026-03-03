@@ -89,9 +89,8 @@ def load_cloud_eval_dataset(
                 item = {
                     "prompt": prompt,
                     "label": label,
+                    "source": source,
                 }
-                if "literal" in task_args.task_type:
-                    item["source"] = source
 
                 rows.append(item)
 

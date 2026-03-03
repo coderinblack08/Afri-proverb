@@ -16,8 +16,8 @@ MODEL="zai-org/GLM-5"
 BASE_OUTPUT_DIR="outputs/together/glm-5"
 
 TASK_TYPES=(
-  # "gen_eng_literal"
-  # "gen_eng_fig"
+  "gen_eng_literal"
+  "gen_eng_fig"
   "gen_swa_literal"
   "gen_swa_fig"
 )
